@@ -60,30 +60,9 @@ func generateModelField(field schema.FieldDefinitions) *ast.FieldList {
 }
 
 func generateTypeModelMarshalJSON(t *schema.TypeDefinition) *ast.FuncDecl {
-	mapperStruct := &ast.DeclStmt{
-		Decl: &ast.GenDecl{
-			Tok: token.VAR,
-			Specs: []ast.Spec{
-				&ast.ValueSpec{
-					Names: []*ast.Ident{
-						{
-							Name: "mapper",
-						},
-					},
-					Type: &ast.StructType{
-						Fields:     generateModelMapperField(t.Fields),
-						Incomplete: true,
-					},
-				},
-			},
-		},
-	}
-
 	mappingSchemaValidation := generateMappingSchemaValidation(t)
 
-	stmts := []ast.Stmt{
-		mapperStruct,
-	}
+	stmts := []ast.Stmt{}
 	stmts = append(stmts, mappingSchemaValidation...)
 
 	stmts = append(stmts, &ast.ReturnStmt{
@@ -289,7 +268,6 @@ func generateUnmarshalJSONBody(fields schema.FieldDefinitions) []ast.Stmt {
 									},
 								},
 							},
-							Incomplete: true,
 						},
 					},
 				},
@@ -374,6 +352,15 @@ func generateMapping(fields schema.FieldDefinitions) []ast.Stmt {
 }
 
 func generateMappingSchemaValidation[T *schema.InputDefinition | *schema.TypeDefinition](t T) []ast.Stmt {
+	var schemaDefinition any = t
+	var selectorX ast.Expr
+	switch schemaDefinition.(type) {
+	case *schema.InputDefinition:
+		selectorX = ast.NewIdent("mapper")
+	case *schema.TypeDefinition:
+		selectorX = ast.NewIdent("t")
+	}
+
 	generateInputIfStmts := func(fields schema.FieldDefinitions) []ast.Stmt {
 		stmts := make([]ast.Stmt, 0, len(fields))
 
@@ -382,7 +369,7 @@ func generateMappingSchemaValidation[T *schema.InputDefinition | *schema.TypeDef
 				stmts = append(stmts, &ast.IfStmt{
 					Cond: &ast.BinaryExpr{
 						X: &ast.SelectorExpr{
-							X:   ast.NewIdent("mapper"),
+							X:   selectorX,
 							Sel: ast.NewIdent("Data." + toUpperCase(string(f.Name))),
 						},
 						Op: token.EQL,
@@ -425,7 +412,7 @@ func generateMappingSchemaValidation[T *schema.InputDefinition | *schema.TypeDef
 				stmts = append(stmts, &ast.IfStmt{
 					Cond: &ast.BinaryExpr{
 						X: &ast.SelectorExpr{
-							X:   ast.NewIdent("mapper"),
+							X:   selectorX,
 							Sel: ast.NewIdent(toUpperCase(string(f.Name))),
 						},
 						Op: token.EQL,

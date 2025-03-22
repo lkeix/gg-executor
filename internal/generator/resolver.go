@@ -146,11 +146,7 @@ func generateResolverServeHTTP(query, mutation, subscription *schema.OperationDe
 				},
 			},
 		},
-		Body: &ast.BlockStmt{
-			List: []ast.Stmt{
-				generateServeHTTPBody(query, mutation, subscription),
-			},
-		},
+		Body: generateServeHTTPBody(query, mutation, subscription),
 	}
 }
 
@@ -234,6 +230,8 @@ func generateServeHTTPBody(query, mutation, subscription *schema.OperationDefini
 					},
 				},
 			},
+
+			&ast.ExprStmt{X: &ast.BasicLit{}},
 			&ast.DeclStmt{Decl: &ast.GenDecl{
 				Tok: token.VAR,
 				Specs: []ast.Spec{
@@ -251,6 +249,8 @@ func generateServeHTTPBody(query, mutation, subscription *schema.OperationDefini
 					},
 				},
 			}},
+
+			&ast.ExprStmt{X: &ast.BasicLit{}},
 			&ast.IfStmt{
 				Init: &ast.AssignStmt{
 					Lhs: []ast.Expr{
@@ -284,6 +284,15 @@ func generateServeHTTPBody(query, mutation, subscription *schema.OperationDefini
 						}},
 						&ast.ReturnStmt{},
 					},
+				},
+			},
+
+			&ast.ExprStmt{X: &ast.BasicLit{}},
+
+			&ast.ExprStmt{
+				X: &ast.BasicLit{
+					Kind:  token.STRING,
+					Value: `// replacing req.Body is in order to use variables instinctly in each resolvers from model package`,
 				},
 			},
 
@@ -366,6 +375,8 @@ func generateServeHTTPBody(query, mutation, subscription *schema.OperationDefini
 				},
 			},
 
+			&ast.ExprStmt{X: &ast.BasicLit{}},
+
 			&ast.SwitchStmt{
 				Tag: ast.NewIdent("operationType"),
 				Body: &ast.BlockStmt{
@@ -444,6 +455,7 @@ func generateServeHTTPBody(query, mutation, subscription *schema.OperationDefini
 					},
 				},
 			},
+			&ast.ExprStmt{X: &ast.BasicLit{}},
 
 			&ast.ExprStmt{X: &ast.CallExpr{
 				Fun: ast.NewIdent("http.Error"),

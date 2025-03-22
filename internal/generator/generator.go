@@ -147,7 +147,7 @@ func (g *Generator) generateModel() error {
 			},
 		})
 
-		g.modelAST.Decls = append(g.modelAST.Decls, generateTypeModelMarshalJSON(t))
+		// g.modelAST.Decls = append(g.modelAST.Decls, generateTypeModelMarshalJSON(t))
 	}
 
 	format.Node(g.modelOutput, token.NewFileSet(), g.modelAST)
