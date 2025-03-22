@@ -215,10 +215,13 @@ func (g *Generator) generateResolver() error {
 		fields = append(fields, s.Fields...)
 	}
 
-	g.resolverAST.Decls = append(g.resolverAST.Decls,
-		generateInterfaceField(g.Schema.GetQuery(), g.modelPackagePath),
-		generateInterfaceField(g.Schema.GetMutation(), g.modelPackagePath),
-	)
+	if g.Schema.GetQuery() != nil {
+		g.resolverAST.Decls = append(g.resolverAST.Decls, generateInterfaceField(g.Schema.GetQuery(), g.modelPackagePath))
+	}
+
+	if g.Schema.GetMutation() != nil {
+		g.resolverAST.Decls = append(g.resolverAST.Decls, generateInterfaceField(g.Schema.GetMutation(), g.modelPackagePath))
+	}
 
 	g.resolverAST.Decls = append(g.resolverAST.Decls, generateResolverImplementationStruct()...)
 	g.resolverAST.Decls = append(g.resolverAST.Decls, generateResolverImplementation(fields)...)

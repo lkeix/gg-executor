@@ -37,7 +37,7 @@ func generateModelField(field schema.FieldDefinitions) *ast.FieldList {
 		if fieldType.IsPrimitive() {
 			fieldTypeIdent = golangType(f.Type, fieldType, "")
 		} else {
-			fieldTypeIdent = golangType(f.Type, fieldType, "")
+			fieldTypeIdent = ast.NewIdent(string(fieldType))
 		}
 
 		fields = append(fields, &ast.Field{

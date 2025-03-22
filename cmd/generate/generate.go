@@ -8,18 +8,18 @@ import (
 )
 
 func main() {
-	schemaDirectory := "./internal/golden_files/operation_test"
-	modelOutputFile, err := os.Create("./internal/generated/model/model.go")
+	schemaDirectory := "./internal/golden_files/gqlgen_init"
+	modelOutputFile, err := os.Create("./internal/generated/gqlgen_init/model/models.go")
 	if err != nil {
 		panic(err)
 	}
 
-	resolverOutputFile, err := os.Create("./internal/generated/resolver/resolver.go")
+	resolverOutputFile, err := os.Create("./internal/generated/gqlgen_init/resolver/resolver.go")
 	if err != nil {
 		panic(err)
 	}
 
-	g, err := generator.NewGenerator(schemaDirectory, modelOutputFile, resolverOutputFile, "github.com/lkeix/gg-executor/internal/generated/model", "github.com/lkeix/gg-executor/internal/generated/resolver")
+	g, err := generator.NewGenerator(schemaDirectory, modelOutputFile, resolverOutputFile, "github.com/lkeix/gg-executor/internal/generated/gqlgen_init/model", "github.com/lkeix/gg-executor/internal/generated/gqlgen_init/resolver")
 	if err != nil {
 		log.Fatalf("error creating generator: %v", err)
 	}

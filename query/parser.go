@@ -381,7 +381,6 @@ func (p *Parser) parseInlineFragment(tokens Tokens, cur int) (*InlineFragment, i
 
 func (p *Parser) parseFragmentSpread(tokens Tokens, cur int) (*FragmentSpread, int, error) {
 	if tokens[cur].Type != Name {
-		fmt.Println(tokens[cur].Type)
 		return nil, cur, fmt.Errorf("expected fragment name but got %s", tokens[cur].Value)
 	}
 
